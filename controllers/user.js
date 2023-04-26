@@ -8,10 +8,14 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if(!user)
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+      return res.send({ data: user });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+        return res.status(400).send({ message: 'Пользователь по указанному _id не найден.' });
       }
       return res.status(500).send({ message: err.message });
     });
@@ -22,7 +26,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       }
       return res.status(500).send({ message: err.message });
@@ -31,13 +35,13 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.params.userId, { name, about })
-    .then((user) => res.send({ data: user }))
+  User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
+    .then((user) => res.send({ name, about }))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении пользователя.' });
       }
       return res.status(500).send({ message: err.message });
     });
@@ -45,8 +49,8 @@ module.exports.updateProfile = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.params.userId, { avatar })
-    .then((user) => res.send({ data: user }))
+  User.findByIdAndUpdate(req.user._id, { avatar })
+    .then((user) => res.send({ avatar }))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
