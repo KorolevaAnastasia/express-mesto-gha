@@ -9,8 +9,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if(!user)
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+      if (!user) return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       return res.send({ data: user });
     })
     .catch((err) => {
@@ -36,7 +35,7 @@ module.exports.createUser = (req, res) => {
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
-    .then((user) => res.send({ name, about }))
+    .then(() => res.send({ name, about }))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
@@ -50,7 +49,7 @@ module.exports.updateProfile = (req, res) => {
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar })
-    .then((user) => res.send({ avatar }))
+    .then(() => res.send({ avatar }))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
