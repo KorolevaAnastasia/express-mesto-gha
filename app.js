@@ -10,6 +10,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
   .then(() => console.log('Успешное подключение к MongoDB'))
   .catch((error) => console.error('Ошибка подключения:', error));
 
+app.use((req, res, next) => {
+  req.user = { _id: '6449220103b34c9ec4b13319' };
+  next();
+});
+
 app.use(routes);
 
 app.listen(PORT, () => {
