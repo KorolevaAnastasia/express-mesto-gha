@@ -1,12 +1,12 @@
 const Card = require('../models/card');
 const {
-  NOT_FOUND, BAD_REQUEST, CREATED,
+  NOT_FOUND, BAD_REQUEST, CREATED, INTERNAL_SERVER_ERROR,
 } = require('../utils/constants');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => res.status(INTERNAL_SERVER_ERROR).send({ message: err.message }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -15,7 +15,7 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.status(CREATED).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.' });
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -27,7 +27,7 @@ module.exports.removeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при удалении карточки.' });
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -39,7 +39,7 @@ module.exports.likeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при лайке карточки.' });
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -51,6 +51,6 @@ module.exports.dislikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при дизлайке карточки.' });
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };

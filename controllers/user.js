@@ -35,8 +35,8 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
-    .then(() => res.send({ name, about }))
+  User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true, new: true })
+    .then((user) => res.send({ name: user.name, about: user.about }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении данных пользователя.' });
       return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
@@ -45,8 +45,8 @@ module.exports.updateProfile = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar })
-    .then(() => res.send({ avatar }))
+  User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true, new: true })
+    .then((user) => res.send({ avatar: user.avatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара пользователя.' });
       return res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
