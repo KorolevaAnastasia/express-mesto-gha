@@ -5,6 +5,9 @@ const { celebrate, Joi } = require('celebrate');
 const NotFoundError = require('../errors/NotFoundError');
 const { regExp } = require('../utils/utils');
 const { createUser, login } = require('../controllers/user');
+const auth = require('../middlewares/auth');
+
+routes.all('*', express.json());
 
 routes.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -23,8 +26,8 @@ routes.post('/signin', celebrate({
   }),
 }), login);
 
-routes.use('/users', require('./users'));
-routes.use('/cards', require('./cards'));
+routes.use('/users', auth, require('./users'));
+routes.use('/cards', auth, require('./cards'));
 
 routes.all('*', (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
