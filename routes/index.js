@@ -2,6 +2,26 @@ const express = require('express');
 
 const routes = express.Router();
 const NotFoundError = require('../errors/NotFoundError');
+const {celebrate, Joi} = require("celebrate");
+const {regExp} = require("../utils/utils");
+const {createUser, login} = require("../controllers/user");
+
+routes.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(regExp),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
+
+routes.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
 
 routes.use('/users', require('./users'));
 routes.use('/cards', require('./cards'));
