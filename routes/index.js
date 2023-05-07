@@ -1,11 +1,12 @@
 const express = require('express');
 
 const routes = express.Router();
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const NotFoundError = require('../errors/NotFoundError');
 const { regExp } = require('../utils/utils');
 const { createUser, login } = require('../controllers/user');
 const auth = require('../middlewares/auth');
+const { handleError } = require('../errors/handleError');
 
 routes.all('*', express.json());
 
@@ -32,5 +33,8 @@ routes.use('/cards', auth, require('./cards'));
 routes.all('*', (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
+
+routes.use(errors());
+routes.use(handleError);
 
 module.exports = { routes };
