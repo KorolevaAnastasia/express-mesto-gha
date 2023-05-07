@@ -17,17 +17,14 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.removeCard = (req, res, next) => {
-  const removeCard = () => {
-    Card.findByIdAndRemove(req.params.cardId)
-      .then((card) => res.send(card))
-      .catch(next);
-  };
-
   Card.findById(req.params.cardId)
-    .then((card) => {
-      if (!card) return next(new NotFoundError('Карточка с указанным _id не найдена.'));
-      if (req.user._id === card.owner._id) {
-        return removeCard();
+    .populate('owner')
+    .then((selectedCard) => {
+      if (!selectedCard) return next(new NotFoundError('Карточка с указанным _id не найдена.'));
+      if (req.user._id === selectedCard.owner._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((card) => res.send(card))
+          .catch(next);
       }
       return next(new ForbiddenError('Нельзя удалить чужую карточку.'));
     })
@@ -35,7 +32,7 @@ module.exports.removeCard = (req, res, next) => {
 };
 
 module.exports.likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) return next(new NotFoundError('Передан несуществующий _id карточки.'));
       return res.send(card);
@@ -44,7 +41,7 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) return next(new NotFoundError('Передан несуществующий _id карточки.'));
       return res.send(card);
