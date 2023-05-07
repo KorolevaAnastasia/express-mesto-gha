@@ -22,11 +22,10 @@ module.exports.removeCard = (req, res, next) => {
     .then((selectedCard) => {
       if (!selectedCard) return next(new NotFoundError('Карточка с указанным _id не найдена.'));
       if (req.user._id === selectedCard.owner._id) {
-        Card.findByIdAndRemove(req.params.cardId)
+        return Card.findByIdAndRemove(req.params.cardId, { new: true })
           .then((card) => res.send(card))
           .catch(next);
-      }
-      return next(new ForbiddenError('Нельзя удалить чужую карточку.'));
+      } return next(new ForbiddenError('Нельзя удалить чужую карточку.'));
     })
     .catch(next);
 };

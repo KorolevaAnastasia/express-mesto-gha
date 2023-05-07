@@ -31,7 +31,7 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (!user) next(new NotFoundError('Пользователь не найден'));
+      if (!user) return next(new NotFoundError('Пользователь не найден'));
       return res.send({ data: user });
     })
     .catch(next);
@@ -41,7 +41,7 @@ module.exports.getProfile = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
-      if (!user) next(new NotFoundError('Пользователь не найден'));
+      if (!user) return next(new NotFoundError('Пользователь не найден'));
       return res.send({ data: user });
     })
     .catch(next);
