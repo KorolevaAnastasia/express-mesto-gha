@@ -17,15 +17,18 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.removeCard = (req, res, next) => {
+  const removeCard = () => {
+    Card.findByIdAndRemove(req.params.cardId)
+      .then((card) => res.send(card))
+      .catch(next);
+  };
+
   Card.findById(req.params.cardId)
     .populate('owner')
-    .then((selectedCard) => {
-      if (!selectedCard) return next(new NotFoundError('Карточка с указанным _id не найдена.'));
-      if (req.user._id === selectedCard.owner._id) {
-        return Card.findByIdAndRemove(req.params.cardId, { new: true })
-          .then((card) => res.send(card))
-          .catch(next);
-      } return next(new ForbiddenError('Нельзя удалить чужую карточку.'));
+    .then((card) => {
+      if (!card) next(new NotFoundError('Передан несуществующий _id карточки.'));
+      if (req.user._id !== card.owner._id) next(new ForbiddenError('Нельзя удалить чужую карточку'));
+      return removeCard();
     })
     .catch(next);
 };
