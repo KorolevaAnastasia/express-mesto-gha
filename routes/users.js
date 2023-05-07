@@ -1,13 +1,11 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const {
-  getUsers, getUser, createUser, updateProfile, updateAvatar, getProfile,
+  getUsers, getUser, updateProfile, updateAvatar, getProfile,
 } = require('../controllers/user');
 const { regExp } = require('../utils/utils');
 
 router.get('/', getUsers);
-router.post('/', createUser);
-
 router.get('/me', getProfile);
 router.patch(
   '/me',
