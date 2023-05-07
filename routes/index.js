@@ -27,9 +27,7 @@ routes.post('/signin', celebrate({
   }),
 }), login);
 
-// routes.use('/users', require('./users'));
 routes.use('/users', auth, require('./users'));
-// routes.use('/cards', require('./cards'));
 routes.use('/cards', auth, require('./cards'));
 
 routes.all('*', (req, res, next) => {
