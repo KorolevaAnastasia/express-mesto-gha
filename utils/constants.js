@@ -1,9 +1,10 @@
-const BAD_REQUEST = 400;
-const NOT_FOUND = 404;
-const INTERNAL_SERVER_ERROR = 500;
 const CREATED = 201;
+const BAD_REQUEST = 400;
 const AUTH_ERROR = 401;
+const FORBIDDEN_ERROR = 403;
+const NOT_FOUND = 404;
 const CONFLICT_ERROR = 409;
+const INTERNAL_SERVER_ERROR = 500;
 
 module.exports = {
   BAD_REQUEST,
@@ -12,4 +13,5 @@ module.exports = {
   CREATED,
   AUTH_ERROR,
   CONFLICT_ERROR,
+  FORBIDDEN_ERROR,
 };

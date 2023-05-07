@@ -11,7 +11,7 @@ const { ConflictError } = require('../errors/ConflictError');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV ? JWT_SECRET : 'secret-key', { expiresIn: '7d' });
       res.cookie('jwt', token, {
@@ -39,7 +39,7 @@ module.exports.getUser = (req, res, next) => {
 
 module.exports.getProfile = (req, res, next) => {
   const userId = req.user._id;
-  User.find({ userId })
+  User.findById(userId)
     .then((user) => {
       if (!user) next(new NotFoundError('Пользователь не найден'));
       return res.send({ data: user });
