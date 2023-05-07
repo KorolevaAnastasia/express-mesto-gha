@@ -26,8 +26,8 @@ module.exports.removeCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .populate('owner')
     .then((card) => {
-      if (!card) next(new NotFoundError('Передан несуществующий _id карточки.'));
-      if (req.user._id !== card.owner._id) next(new ForbiddenError('Нельзя удалить чужую карточку'));
+      if (!card) return next(new NotFoundError('Передан несуществующий _id карточки.'));
+      if (req.user._id !== card.owner._id) return next(new ForbiddenError('Нельзя удалить чужую карточку'));
       return removeCard();
     })
     .catch(next);
