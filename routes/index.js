@@ -1,10 +1,10 @@
 const express = require('express');
 
 const routes = express.Router();
+const { celebrate, Joi } = require('celebrate');
 const NotFoundError = require('../errors/NotFoundError');
-const {celebrate, Joi} = require("celebrate");
-const {regExp} = require("../utils/utils");
-const {createUser, login} = require("../controllers/user");
+const { regExp } = require('../utils/utils');
+const { createUser, login } = require('../controllers/user');
 
 routes.post('/signup', celebrate({
   body: Joi.object().keys({
