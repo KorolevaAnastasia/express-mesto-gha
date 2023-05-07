@@ -1,14 +1,7 @@
 const routes = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { regExp } = require('../utils/utils');
 const { login, createUser } = require('../controllers/user');
-
-routes.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
+const { regExp } = require('../utils/utils');
 
 routes.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -19,5 +12,12 @@ routes.post('/signup', celebrate({
     password: Joi.string().required(),
   }),
 }), createUser);
+
+routes.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
 
 module.exports = routes;

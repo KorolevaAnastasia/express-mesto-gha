@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -65,7 +66,6 @@ module.exports.createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
-        password: user.password,
       });
     })
     .catch((err) => {
