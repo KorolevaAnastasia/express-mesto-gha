@@ -7,8 +7,10 @@ const app = express();
 
 const { PORT = 3000 } = process.env;
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const { routes } = require('./routes');
 const auth = require('./middlewares/auth');
+const { handleError } = require('./errors/handleError');
 
 app.all('*', express.json());
 app.use(cookieParser());
@@ -22,6 +24,9 @@ app.use('/', require('./routes/auth'));
 app.use(auth);
 
 app.use(routes);
+
+app.use(errors);
+app.use(handleError);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
